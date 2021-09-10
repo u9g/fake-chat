@@ -64,7 +64,7 @@ module.exports = async (txt, { background, crop } = {}) => {
   }
 
   const [h, w] = getTextSize(txt, createCanvas(500, 500).getContext('2d'))
-  return cropCanvas(canvas, 0, canvas.height - h, w, h).toBuffer('image/png')
+  return crop ? cropCanvas(canvas, 0, canvas.height - h, w, h) : canvas
 }
 
 function setColor (ctx, colorCode) {
