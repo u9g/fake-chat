@@ -1,6 +1,7 @@
 const { createCanvas, loadImage, registerFont } = require('node-canvas')
-registerFont('minecraft.otf', { family: 'minecraft' })
-registerFont('minecraft-bold.otf', { family: 'minecraft-bold' })
+const { join } = require('path')
+registerFont(join(__dirname, 'minecraft.otf'), { family: 'minecraft' })
+registerFont(join(__dirname, 'minecraft-bold.otf'), { family: 'minecraft-bold' })
 
 const COLOR_CODES = {
   0: [0, 0, 0],
