@@ -1,0 +1,12 @@
+{
+  "name": "fake-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js"
+  "keywords": [],
+  "author": "u9g <winworkswow@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "node-canvas": "^2.7.0"
+  }
+}
