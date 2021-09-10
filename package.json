@@ -2,7 +2,7 @@
   "name": "fake-chat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js"
+  "main": "index.js",
   "keywords": [],
   "author": "u9g <winworkswow@gmail.com>",
   "license": "MIT",
