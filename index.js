@@ -40,10 +40,12 @@ const SHADOW_COLOR_CODES = {
   e: [63, 63, 21],
   f: [63, 63, 63]
 }
-const FONT_WIDTH = 16
+const FONT_WIDTH = 50
 const BOLD_FONT_WIDTH = (37 / 30) * FONT_WIDTH
 module.exports = async (txt, { background, crop } = {}) => {
-  let [height, width] = getTextSize(txt, createCanvas(500, 500).getContext('2d'))
+  const canvas2 = createCanvas(1,1)
+  const ctx2 = canvas2.getContext('2d')
+  let [height, width] = getTextSize(txt, ctx2)
   let image
   if (background !== undefined && background !== '') {
     image = await loadImage(background)
@@ -53,19 +55,19 @@ module.exports = async (txt, { background, crop } = {}) => {
   const canvas = createCanvas(width, height)
   const ctx = canvas.getContext('2d')
   if (image) ctx.drawImage(image, 0, 0)
-  ctx.shadowOffsetX = 2
-  ctx.shadowOffsetY = 2
-
+  ctx.shadowOffsetX = 5
+  ctx.shadowOffsetY = 5
+  
   const arr = txt.split('\n')
   setFont(ctx, false)
   let currHeight = 0
   for (let i = arr.length - 1; i >= 0; i--) {
-    currHeight += renderLine(ctx, arr[i], canvas.height, currHeight, ctx.shadowOffsetY)
+    currHeight += renderLine(ctx, arr[i], canvas.height, currHeight, ctx.shadowOffsetY, ctx2)
     setFont(ctx, false)
   }
 
-  const [h, w] = getTextSize(txt, createCanvas(500, 500).getContext('2d'))
-  return crop ? cropCanvas(canvas, 0, canvas.height - h, w, h) : canvas
+  const [h, w] = getTextSize(txt, ctx2)
+  return crop ? cropCanvas(canvas, 0, canvas.height - h, w, h, canvas2) : canvas
 }
 
 function setColor (ctx, colorCode) {
@@ -80,7 +82,7 @@ function setFont (ctx, bold) {
   }
 }
 
-function renderLine (ctx, str, canvasHeight, currHeight, shadowOffsetY) {
+function renderLine (ctx, str, canvasHeight, currHeight, shadowOffsetY, ctx2) {
   let currWidth = 0
   for (let i = 0; i < str.length; i++) {
     if (str[i] === '&') {
@@ -98,10 +100,10 @@ function renderLine (ctx, str, canvasHeight, currHeight, shadowOffsetY) {
     ctx.fillText(str[i], 1 + currWidth, canvasHeight - currHeight - emHeightDescent - shadowOffsetY)
     currWidth += width
   }
-  return getTextSize(str, createCanvas(500, 500).getContext('2d'))[0] // height
+  return getTextSize(str, ctx2)[0] // height
 }
 
-function getTextSize (txt, ctx, b) {
+function getTextSize (txt, ctx) {
   setFont(ctx, false)
   const lines = []
   let maxHeight = 0
@@ -129,11 +131,12 @@ function getTextSize (txt, ctx, b) {
   return [maxHeight, width]
 }
 
-const cropCanvas = (sourceCanvas, left, top, width, height) => {
-  const destCanvas = createCanvas(width, height)
-  destCanvas.getContext('2d').drawImage(
+const cropCanvas = (sourceCanvas, left, top, width, height, canvas2) => {
+  canvas2.height = height
+  canvas2.width = width
+  canvas2.getContext('2d').drawImage(
     sourceCanvas,
     left, top, width, height, // source rect with content to crop
     0, 0, width, height) // newCanvas, same size as source rect
-  return destCanvas
+  return canvas2
 }
