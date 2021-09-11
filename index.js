@@ -84,6 +84,7 @@ function setFont (ctx, bold) {
 
 function renderLine (ctx, str, canvasHeight, currHeight, shadowOffsetY, ctx2) {
   let currWidth = 0
+  let toWrite = ''
   for (let i = 0; i < str.length; i++) {
     if (str[i] === '&') {
       const next = str[++i]
@@ -95,10 +96,17 @@ function renderLine (ctx, str, canvasHeight, currHeight, shadowOffsetY, ctx2) {
         setColor(ctx, next)
       }
       continue
+    } else {
+      // batch writing for 5x speed
+      while (str[i + 1] !== '&' && i < str.length - 1) {
+        toWrite += str[i++]
+      }
+      toWrite += str[i]
     }
-    const { width, emHeightDescent } = ctx.measureText(str[i])
-    ctx.fillText(str[i], 1 + currWidth, canvasHeight - currHeight - emHeightDescent - shadowOffsetY)
+    const { width, emHeightDescent } = ctx.measureText(toWrite)
+    ctx.fillText(toWrite, 1 + currWidth, canvasHeight - currHeight - emHeightDescent - shadowOffsetY)
     currWidth += width
+    toWrite = ''
   }
   return getTextSize(str, ctx2)[0] // height
 }
@@ -110,6 +118,7 @@ function getTextSize (txt, ctx) {
   for (const line of txt.split('\n')) {
     let currTotal = 0
     let currHeightMax = 0
+    let toWrite = ''
     for (let i = 0; i < line.length; i++) {
       if (line[i] === '&') {
         const next = line[++i]
@@ -119,10 +128,17 @@ function getTextSize (txt, ctx) {
           setFont(ctx, false)
         }
         continue
+      } else {
+        // batch writing for 5x speed
+        while (line[i + 1] !== '&' && i < line.length - 1) {
+          toWrite += line[i++]
+        }
+        toWrite += line[i]
       }
-      const out = ctx.measureText(line[i])
+      const out = ctx.measureText(toWrite)
       currHeightMax = Math.max(currHeightMax, out.emHeightAscent + out.emHeightDescent)
       currTotal += out.width
+      toWrite = ''
     }
     lines.push(currTotal)
     maxHeight += currHeightMax
