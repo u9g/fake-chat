@@ -7,6 +7,6 @@
   "author": "u9g <winworkswow@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "node-canvas": "^2.8.0"
+    "canvas": "^2.6.1"
   }
 }
