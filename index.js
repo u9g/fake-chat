@@ -1,4 +1,4 @@
-const { createCanvas, loadImage, registerFont } = require('node-canvas')
+const { createCanvas, loadImage, registerFont } = require('canvas')
 const { join } = require('path')
 registerFont(join(__dirname, 'minecraft.otf'), { family: 'minecraft' })
 registerFont(join(__dirname, 'minecraft-bold.otf'), { family: 'minecraft-bold' })
